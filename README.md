@@ -227,6 +227,25 @@ cd deploy/robots/g1/build
 | <img src="doc/gif/go2-velocity-real.gif" width="300"/> | <img src="doc/gif/g1-velocity-real.gif" width="300"/> | <img src="doc/gif/h1_2-velocity-real.gif" width="300"/> | <img src="doc/gif/g1-mimic-real.gif" width="300"/> |
 
 
+## 🕺 Custom Motions
+
+`motions/<name>/` holds self-contained, published motion packages
+(`motion.npz` + `policy.pt`/`.onnx` + `demo.mp4` + `README.md`), separate from
+the framework's own reference clip (`dance1_subject2`).
+
+- **`motions/ali_dance/`** — retargeted from a personal video, not
+  bvh/mocap: video → [GVHMR](https://github.com/zju3dv/GVHMR) (SMPL/SMPLX
+  pose estimation) → [GMR](https://github.com/YanjieZe/GMR) (`gvhmr_to_robot.py
+  --robot unitree_g1`) → `convert_gmr_to_mjlab_fk.py` → mjlab tracking npz.
+  Full pipeline, known conversion bugs, and validation checklist are in
+  [`doc/ali_motion_notes.md`](doc/ali_motion_notes.md).
+
+  ⚠️ **License note**: the pose data comes from GVHMR, which is released
+  under a **non-commercial, research-only** license (ZJU3DV). This clip and
+  the policy trained on it inherit that restriction — research/educational
+  use only; commercial use requires separate permission from the GVHMR
+  copyright holders.
+
 ## 🎉  Acknowledgements
 
 This project would not be possible without the contributions of the following repositories:

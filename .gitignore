@@ -10,5 +10,43 @@ deploy/robots/h1_2/build
 deploy/robots/g1_23dof/build
 deploy/robots/r1/build
 deploy/robots/a2/build
-src/assets/motions/g1/dance1_subject2.npz
 simulate/build
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Training checkpoints / raw event logs (regenerate via scripts/train.py)
+*.pt
+*.pth
+*.ckpt
+events.out.tfevents.*
+
+# Raw / generated motion data (regenerate from csv or GMR output; keep curated
+# release clips under deploy/**/params/ tracked explicitly)
+src/assets/motions/**/*.npz
+
+# Video exports
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+
+# Editor / backup scratch files
+*.bak
+*.orig
+*.swp
+
+# Local overrides / secrets
+.env
+*.local.yaml
+*.local.yml
+
+# Unlicensed third-party motion clip (exptech/g1-moves, no LICENSE) - do not publish
+deploy/robots/g1/config/policy/mimic/B_DadDance/
+
+# motions/<name>/ is a curated, intentionally-published release package
+# (motion.npz + policy.pt|onnx + demo.mp4 + README.md) - the *.npz/*.pt/*.mp4
+# rules above must not swallow it.
+!motions/**

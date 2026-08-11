@@ -165,10 +165,22 @@ void State_Mimic::enter()
         init_quat = robot_yaw * ref_yaw.transpose();
         env->reset();
 
+        spdlog::info("[MIMIC_DBG] entering Mimic while-loop: time_range_[0]={:.4f} motion->frame(after reset)={} motion->duration={:.4f} motion->dt={:.4f}",
+                      time_range_[0], motion->frame, motion->duration, motion->dt);
+        isaaclab::g_debug_log_remaining = 5;
+        isaaclab::g_debug_log_call_no = 0;
+        int dbg_iters_left = 5;
+
         while (policy_thread_running)
         {
             env->robot->update();
-            motion->update(env->episode_length * env->step_dt + time_range_[0]);
+            float motion_t = env->episode_length * env->step_dt + time_range_[0];
+            motion->update(motion_t);
+            if (dbg_iters_left > 0) {
+                spdlog::info("[MIMIC_DBG] pre-step episode_length={} motion_t={:.4f} motion->frame={} (of {})",
+                              env->episode_length, motion_t, motion->frame, motion->num_frames);
+                dbg_iters_left--;
+            }
             env->step();
 
             // Sleep

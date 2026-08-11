@@ -78,7 +78,7 @@ public:
 
   double stiffness_ = 200;
   double damping_ = 100;
-  std::vector<double> point_ = {0, 0, 3};
+  std::vector<double> point_ = {0, 0, 1.05};
   double length_ = 0.0;
   bool enable_ = true;
   std::vector<double> f_ = {0, 0, 0};
@@ -682,6 +682,10 @@ int main(int argc, char **argv)
   auto sim = std::make_unique<mj::Simulate>(
     std::make_unique<mj::GlfwAdapter>(),
     &cam, &opt, &pert, /* is_passive = */ false);
+  // Force physics stepping on from the start: the custom key callback below
+  // replaces Simulate's own GLFW key handler, so the built-in Space-to-run
+  // shortcut is unavailable and the sim would otherwise sit paused forever.
+  sim->run = 1;
 
   std::thread unitree_thread(UnitreeSdk2BridgeThread, nullptr);
 

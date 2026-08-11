@@ -65,10 +65,15 @@ public:
     {
         auto memory_info = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
 
-        // make sure all input names are in obs
-        for (const auto& name : input_names) {
-            if (obs.find(name) == obs.end()) {
-                throw std::runtime_error("Input name " + std::string(name) + " not found in observations.");
+        // Some exported graphs carry auxiliary inputs (e.g. a "time_step" index feeding
+        // debug/reference outputs we never request) that aren't produced by the observation
+        // manager. Those don't affect the "actions" output, so default them to zero instead
+        // of failing.
+        std::vector<std::vector<float>> zero_fill_storage;
+        for (size_t i = 0; i < input_names.size(); ++i) {
+            if (obs.find(input_names[i]) == obs.end()) {
+                zero_fill_storage.emplace_back(input_sizes[i], 0.0f);
+                obs.emplace(input_names[i], zero_fill_storage.back());
             }
         }
 
